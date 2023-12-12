@@ -1,0 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=League+Spartan&display=swap');
+
+:root {
+    /* Color styles */
+    --primary-red: hsla(355, 67.5%, 55.3%, 1);
+    --secondary-blue: hsla(214, 54.4%, 66.5%, 1);
+    --secondary-grey: hsla(0, 0%, 49.8%, 1);
+    --secondary-purple: hsla(336, 64.2%, 47.1%, 1);
+    --base-90: hsla(216, 38.5%, 7.6%, 1);
+    --base-80: hsla(213, 15.8%, 11.2%, 1);
+    --base-70: hsla(213, 14.1%, 25.1%, 1);
+    --base-60: hsla(211, 14.5%, 33.9%, 1);
+    --base-50: hsla(212, 14.7%, 42.7%, 1);
+    --base-40: hsla(211, 14.2%, 51.6%, 1);
+    --base-30: hsla(210, 14.9%, 60.4%, 1);
+    --base-20: hsla(209, 14.6%, 69.2%, 1);
+    --base-10: hsla(215, 28.4%, 86.9%, 1);
+    --base-5: hsla(215, 30%, 92.2%, 1);
+    --base-0: hsla(210, 50%, 97.6%, 1);
+}
+
+body {
+    font-family: 'League Spartan', sans-serif;
+    background-color: var(--base-80);
+    color:var(--base-10);
+}
+
+.container{
+    max-width: 1280px; 
+    width: 100vw;
+    margin: auto;
+}
+
+.glitch{
+    &-wrapper{
+        width: 100%;
+        display: grid;
+        grid-template-columns: 40% auto;
+        min-height: 60vh;
+    }
+    
+    &-pictures-list{
+        padding: 0;
+        list-style: none;
+        li{
+            font-size: 2rem;
+            padding: 1em 0;
+            border-bottom: solid 1px var(--base-70);
+            color: var(--base-50);
+            transition: color 0.15s linear;
+            cursor: pointer;
+            @media(hover:'hover'){
+                &:hover{
+                    color: var(--base-10);
+                }
+            }
+        }
+    }
+}

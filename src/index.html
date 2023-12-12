@@ -1,12 +1,37 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Glitch GL</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/index.js"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Glitch GL</title>
+</head>
+
+<body>
+  <div id="app">
+
+    <h1>GlitchGL experiment</h1>
+
+    <section class="glitch-wrapper container">
+
+      <!--GLITCH SCENE BEGIN-->
+      <div class="glitch-container">
+        <!--Preload images in container-->
+        <img src="/assets/picture-1.jpg"/>
+        <img src="/assets/picture-2.jpg"/>
+        <img src="/assets/picture-3.jpg"/>
+      </div>
+      <!--GLITCH SCENE END-->
+
+      <ul class="glitch-pictures-list">
+        <li>Picture 1</li>
+        <li>Picture 2</li>
+        <li>Picture 3</li>
+      </ul>
+    </section>
+
+  </div>
+  <script type="module" src="/index.js"></script>
+</body>
+
 </html>

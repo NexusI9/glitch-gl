@@ -31,9 +31,9 @@ export default {
       },
     resolve: {
         alias: {
-            '@': path.resolve(__dirname, './src'),
             '@styles': path.resolve(__dirname, './src/styles'),
             '@lib': path.resolve(__dirname, './src/lib'),
+            '@public': path.resolve(__dirname, './public'),
         }
     },
     plugins: [glsl()]

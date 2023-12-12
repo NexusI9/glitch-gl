@@ -1,0 +1,18 @@
+
+.glitch-gl{
+
+    &-container{
+        position: relative;
+    }
+
+    &-pictures-item{
+        position: absolute;
+        display: block;
+        pointer-events: none;
+        
+        &.hide{
+            display: none;
+        }
+    }
+
+}

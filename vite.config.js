@@ -14,14 +14,21 @@ export default {
         //remove hash
         rollupOptions: {
             input:{
-                index:'src/index.js',
-                'lib/glitchgl':'src/lib/glitchgl.js'
+                index:'src/index.html'
             },
             output:{
-                entryFileNames: '[name].js'
+                entryFileNames: 'scripts/[name].js',
+                chunkFileNames: 'scripts/vendor/[name].js',
+                manualChunks:{
+                    'glitchgl': [path.resolve(__dirname, '/vendor/glitchgl/index.js')],
+                    'three':['three']
+                }
             }
         }
     },
+    optimizeDeps: {
+        include: ['three'], 
+      },
     resolve: {
         alias: {
             '@': path.resolve(__dirname, './src'),

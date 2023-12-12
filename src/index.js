@@ -2,11 +2,11 @@ import './styles/style.scss'
 import GlitchGL from './vendor/glitchgl/index.js'
 
 
-
 const glitchScene = new GlitchGL({
     container:'.glitch-container',
     images:'.glitch-container > img'
 });
+
 
 function __main__(){
 

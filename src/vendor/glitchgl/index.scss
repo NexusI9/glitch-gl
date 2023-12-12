@@ -3,13 +3,21 @@
 
     &-container{
         position: relative;
+
+        canvas{
+            position: absolute;
+            z-index: 1;
+            top:0;
+            left: 0;
+        }
     }
 
     &-pictures-item{
         position: absolute;
         display: block;
         pointer-events: none;
-        
+        z-index: 0;
+        visibility: visible;
         &.hide{
             display: none;
         }

@@ -21,13 +21,14 @@ export default class {
 
         //setup three js scene
         this.setupScene();
-        this.setupCamera();
 
         //generate picture meshes from img list
         this.generatePictures();
         this.setActivePicture(0); //init
 
         this.setupRenderer();
+
+        this.setupCamera();
 
         //render whole scene
         this.render();
@@ -53,6 +54,7 @@ export default class {
             const picture = new Picture({
                 element: img,
                 scene: this.scene,
+                container: this.container,
                 id: index,
                 active: this.activePicture === index
             });
@@ -73,12 +75,15 @@ export default class {
 
         // Initialize perspective camera
         let perspective = 1000;
-        const fov = (180 * (2 * Math.atan(this.viewport.height / 2 / perspective))) / Math.PI; // see fov image for a picture breakdown of this fov setting.
-        this.camera = new THREE.PerspectiveCamera(fov, this.viewport.aspectRatio, 1, 1000)
+        const fov = (200 * (2 * Math.atan(window.innerHeight / 2 / perspective))) / Math.PI; // see fov image for a picture breakdown of this fov setting.
+        this.camera = new THREE.PerspectiveCamera(fov, this.viewport.aspectRatio, 1, perspective)
+        //this.camera = new THREE.OrthographicCamera( this.viewport.width / - 2, this.viewport.width  / 2, this.viewport.height  / 2, this.viewport.height  / - 2, 1, 1000 );
+
         this.camera.position.set(0, 0, perspective); // set the camera position on the z axis.
     }
 
     setupRenderer() {
+
         // renderer
         // this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -101,7 +106,7 @@ export default class {
 
 
     render() {
-
+        this.images.forEach( img => img.render() );
         this.renderer.render(this.scene, this.camera)
         requestAnimationFrame(this.render.bind(this));
     }

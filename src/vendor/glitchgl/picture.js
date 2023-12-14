@@ -44,11 +44,11 @@ export default class {
         this.lastMovement = { x: event.movementX, y: event.movementY };
         this.currentPosition.x = (event.pageX - picture.initPosition.x - width / 2) / this.divider;
         this.currentPosition.y = -1 * (event.pageY - picture.initPosition.y - height / 2) / this.divider;
-        
-        picture.timeout = setTimeout( () => { 
-            this.lastMovement.x = 0; 
+
+        picture.timeout = setTimeout(() => {
+            this.lastMovement.x = 0;
             this.lastMovement.y = 0;
-        },200);
+        }, 200);
     }
 
     setActive(active) {
@@ -156,13 +156,12 @@ export default class {
 
         //
         const disrupt = new THREE.Vector2(
-            THREE.MathUtils.lerp(this.mesh.position.x, this.lastMovement.x, interpolators.cubic(this.ease)) * 0.002,
+            THREE.MathUtils.lerp(this.mesh.position.x, this.lastMovement.x, interpolators.cubic(this.ease)) * 0.001,
             -1 * THREE.MathUtils.lerp(this.mesh.position.y, this.lastMovement.y, interpolators.cubic(this.ease)) * 0.001
         );
 
-
-        console.log(disrupt);
-        this.uniforms.uOffset.value = (disrupt);
+        
+        this.uniforms.uOffset.value = disrupt;
 
 
     }

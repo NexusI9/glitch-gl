@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import './index.scss';
+import './styles/index.scss';
 import Picture from './picture';
 
 export default class {

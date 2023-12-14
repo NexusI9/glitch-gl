@@ -10,18 +10,21 @@ export default class {
     lastMovement = 0;
     ease = 0.2;
     divider = 1;
+    timeout;
 
-    constructor({ element, scene, container, id, active = true }) {
+    constructor({ element, scene, camera, container, id, active = true, contains = true }) {
         this.element = element; //orinial img element
         this.scene = scene; //parent Glitch gl scene 
+        this.camera = camera;
         this.id = id; //id in list, will be used to be updated
         this.active = active;
         this.container = container;
         this.offset = new THREE.Vector2(0, 0); // Positions of mesh on screen. Will be updated below.
         this.sizes = new THREE.Vector2(0, 0); //Size of mesh on screen. Will be updated below.
+        this.contains = contains //contain picture within canvas
     }
 
-    get elementDimension(){
+    get elementDimension() {
         return this.element.getBoundingClientRect();
     }
 
@@ -35,14 +38,17 @@ export default class {
     }
 
     onMouseMove({ event, picture }) {
-        if (picture.active) {
-            const { width, height } = this.elementDimension;
-            this.lastMovement = Math.abs(event.movementX * event.movementY);
-            this.currentPosition.x = (event.pageX - picture.initPosition.x - width/2 ) / this.divider;
-            this.currentPosition.y = -1 * (event.pageY - picture.initPosition.y - height / 2) / this.divider;
 
-            //picture.element.style.transform = `translate3d(${this.currentPosition.x}px,${-1*this.currentPosition.y}px, 0)`;
-        }
+        clearTimeout(picture.timeout);
+        const { width, height } = picture.elementDimension;
+        this.lastMovement = { x: event.movementX, y: event.movementY };
+        this.currentPosition.x = (event.pageX - picture.initPosition.x - width / 2) / this.divider;
+        this.currentPosition.y = -1 * (event.pageY - picture.initPosition.y - height / 2) / this.divider;
+        
+        picture.timeout = setTimeout( () => { 
+            this.lastMovement.x = 0; 
+            this.lastMovement.y = 0;
+        },200);
     }
 
     setActive(active) {
@@ -72,8 +78,8 @@ export default class {
 
         //set CSS & Event movement
         this.updateState("INIT");
-        this.initPosition.x = this.element.getBoundingClientRect().left;
-        this.initPosition.y = this.element.getBoundingClientRect().top;
+        this.initPosition.x = this.elementDimension.left;
+        this.initPosition.y = this.elementDimension.top;
         window.addEventListener('mousemove', (e) => this.onMouseMove({ event: e, picture: this }));
 
         //generate mesh
@@ -106,28 +112,57 @@ export default class {
         this.mesh.position.set(this.offset.x, this.offset.y, 0);
         this.mesh.scale.set(this.sizes.x, this.sizes.y, 1);
 
+        //setup hitbox
+        this.box = new THREE.Box3();
+        this.mesh.geometry.computeBoundingBox();
+
+
         this.scene.add(this.mesh);
+
+        //setup frustrum
+        if (this.contains && this.camera) {
+            this.frustum = new THREE.Frustum();
+            this.frustum.setFromProjectionMatrix(this.camera.projectionMatrix);
+        }
+
+    }
+
+    checkBoundaries() {
+
+        //update box coordinate
+        this.box.copy(this.mesh.geometry.boundingBox).applyMatrix4(this.mesh.matrixWorld);
+        //console.log( this.frustum );
+        if (this.frustum.intersectsBox(this.box)) {
+            console.log("out");
+        }
+
+
     }
 
     render() {
 
-        if (!this.active) {
-            return;
-        }
+
+
         // this function is repeatidly called for each instance in the above 
         this.getDimensions();
-        //this.mesh.position.set(this.offset.x, this.offset.y, 0);
+
+        if (this.contains) {
+            this.checkBoundaries();
+        }
+
         this.mesh.scale.set(this.sizes.x, this.sizes.y, 1);
         this.mesh.position.x = THREE.MathUtils.lerp(this.mesh.position.x, this.currentPosition.x, interpolators.cubic(this.ease));
         this.mesh.position.y = THREE.MathUtils.lerp(this.mesh.position.y, this.currentPosition.y, interpolators.cubic(this.ease));
 
-        /*console.log(this.lastMovement);
-        if(this.lastMovement > 0){
-            while(this.lastMovement > 0){
-                this.lastMovement -= 1 * this.ease;
-                this.uniforms.uOffset.value.set(this.offset.x * 0.0, -(this.currentPosition.x) * 0.0003);
-            }
-        }*/
+        //
+        const disrupt = new THREE.Vector2(
+            THREE.MathUtils.lerp(this.mesh.position.x, this.lastMovement.x, interpolators.cubic(this.ease)) * 0.002,
+            -1 * THREE.MathUtils.lerp(this.mesh.position.y, this.lastMovement.y, interpolators.cubic(this.ease)) * 0.001
+        );
+
+
+        console.log(disrupt);
+        this.uniforms.uOffset.value = (disrupt);
 
 
     }

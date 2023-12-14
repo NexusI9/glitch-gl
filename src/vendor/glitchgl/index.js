@@ -23,12 +23,13 @@ export default class {
         this.setupScene();
 
         //generate picture meshes from img list
+
+        this.setupCamera();
+
         this.generatePictures();
         this.setActivePicture(0); //init
 
         this.setupRenderer();
-
-        this.setupCamera();
 
         //render whole scene
         this.render();
@@ -54,6 +55,7 @@ export default class {
             const picture = new Picture({
                 element: img,
                 scene: this.scene,
+                camera: this.camera,
                 container: this.container,
                 id: index,
                 active: this.activePicture === index
@@ -75,11 +77,10 @@ export default class {
 
         // Initialize perspective camera
         let perspective = 1000;
-        const fov = (200 * (2 * Math.atan(window.innerHeight / 2 / perspective))) / Math.PI; // see fov image for a picture breakdown of this fov setting.
         //this.camera = new THREE.PerspectiveCamera(fov, this.viewport.aspectRatio, 1, perspective)
         this.camera = new THREE.OrthographicCamera( this.viewport.width / - 2, this.viewport.width  / 2, this.viewport.height  / 2, this.viewport.height  / - 2, 1, 1000 );
-
         this.camera.position.set(0, 0, perspective); // set the camera position on the z axis.
+
     }
 
     setupRenderer() {
@@ -90,6 +91,7 @@ export default class {
         this.renderer.setSize(this.viewport.width, this.viewport.height); // uses the getter viewport function above to set size of canvas / renderer
         this.renderer.setPixelRatio(window.devicePixelRatio); // Import to ensure image textures do not appear blurred.
         this.container.appendChild(this.renderer.domElement); // append the canvas to the main element
+        this.setupCamera();
     }
 
     onWindowResize() {

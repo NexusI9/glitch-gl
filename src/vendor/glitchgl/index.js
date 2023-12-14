@@ -76,8 +76,8 @@ export default class {
         // Initialize perspective camera
         let perspective = 1000;
         const fov = (200 * (2 * Math.atan(window.innerHeight / 2 / perspective))) / Math.PI; // see fov image for a picture breakdown of this fov setting.
-        this.camera = new THREE.PerspectiveCamera(fov, this.viewport.aspectRatio, 1, perspective)
-        //this.camera = new THREE.OrthographicCamera( this.viewport.width / - 2, this.viewport.width  / 2, this.viewport.height  / 2, this.viewport.height  / - 2, 1, 1000 );
+        //this.camera = new THREE.PerspectiveCamera(fov, this.viewport.aspectRatio, 1, perspective)
+        this.camera = new THREE.OrthographicCamera( this.viewport.width / - 2, this.viewport.width  / 2, this.viewport.height  / 2, this.viewport.height  / - 2, 1, 1000 );
 
         this.camera.position.set(0, 0, perspective); // set the camera position on the z axis.
     }

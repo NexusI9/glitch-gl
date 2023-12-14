@@ -17,10 +17,7 @@
         display: block;
         pointer-events: none;
         z-index: 0;
-        visibility: visible;
-        &.hide{
-            display: none;
-        }
+        visibility: hidden;
     }
 
 }

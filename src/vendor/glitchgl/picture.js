@@ -8,8 +8,8 @@ export default class {
     initPosition = { x: 0, y: 0 };
     currentPosition = { x: 0, y: 0 };
     lastMovement = 0;
-    ease = 0.75;
-    divider = 10;
+    ease = 0.2;
+    divider = 1;
 
     constructor({ element, scene, container, id, active = true }) {
         this.element = element; //orinial img element
@@ -21,28 +21,27 @@ export default class {
         this.sizes = new THREE.Vector2(0, 0); //Size of mesh on screen. Will be updated below.
     }
 
+    get elementDimension(){
+        return this.element.getBoundingClientRect();
+    }
+
 
     getDimensions() {
-        const { width, height, top, left } = this.element.getBoundingClientRect();
+        const { width, height, top, left } = this.elementDimension;
         const containerDimension = this.container.getBoundingClientRect();
         this.sizes.set(width, height);
         this.offset.set(left - window.innerWidth / 2 + width / 2, -top + window.innerHeight / 2 - height / 2);
         //this.offset.set(left - containerDimension.width/4, -1*top);
-
     }
 
     onMouseMove({ event, picture }) {
         if (picture.active) {
+            const { width, height } = this.elementDimension;
+            this.lastMovement = Math.abs(event.movementX * event.movementY);
+            this.currentPosition.x = (event.pageX - picture.initPosition.x - width/2 ) / this.divider;
+            this.currentPosition.y = -1 * (event.pageY - picture.initPosition.y - height / 2) / this.divider;
 
-            this.lastMovement = Math.abs(event.movementX * event.movementY); 
-
-            const newX = (event.pageX - picture.initPosition.x) / this.divider;
-            const newY = (event.pageY - picture.initPosition.y) / this.divider;
-
-            this.currentPosition.x = lerp(this.currentPosition.x, newX, interpolators.cubic(this.ease));
-            this.currentPosition.y = lerp(this.currentPosition.y, newY, interpolators.cubic(this.ease));
-
-            picture.element.style.transform = `translate3d(${this.currentPosition.x}px,${this.currentPosition.y}px, 0)`;
+            //picture.element.style.transform = `translate3d(${this.currentPosition.x}px,${-1*this.currentPosition.y}px, 0)`;
         }
     }
 
@@ -60,12 +59,10 @@ export default class {
                 break;
 
             case 'SHOW':
-                this.element.classList.remove("hide");
                 this.uniforms.uAlpha.value = 1.;
                 break;
 
             case 'HIDE':
-                this.element.classList.add("hide");
                 this.uniforms.uAlpha.value = 0.;
                 break;
         }
@@ -119,8 +116,10 @@ export default class {
         }
         // this function is repeatidly called for each instance in the above 
         this.getDimensions();
-        this.mesh.position.set(this.offset.x, this.offset.y, 0);
+        //this.mesh.position.set(this.offset.x, this.offset.y, 0);
         this.mesh.scale.set(this.sizes.x, this.sizes.y, 1);
+        this.mesh.position.x = THREE.MathUtils.lerp(this.mesh.position.x, this.currentPosition.x, interpolators.cubic(this.ease));
+        this.mesh.position.y = THREE.MathUtils.lerp(this.mesh.position.y, this.currentPosition.y, interpolators.cubic(this.ease));
 
         /*console.log(this.lastMovement);
         if(this.lastMovement > 0){
